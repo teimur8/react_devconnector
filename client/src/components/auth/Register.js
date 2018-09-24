@@ -139,9 +139,8 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-const test123 = () => ({ test: 123 });
 
 export default connect(
   mapStateToProps,
-  { registerUser, test123 }
+  { registerUser }
 )(withRouter(Register));
