@@ -1,8 +1,12 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import pick from "lodash/pick";
 import classnames from "classnames";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { registerUser } from "../../actions/authActions";
 
-export default class Register extends Component {
+class Register extends Component {
   constructor(props) {
     super(props);
 
@@ -26,7 +30,15 @@ export default class Register extends Component {
 
     let userData = pick(this.state, ["name", "email", "password", "password2"]);
 
-    console.log(userData);
+    this.props.registerUser(userData, () =>{
+      this.props.history.push('/login')
+    });
+  };
+
+  componentWillReceiveProps = nextProp => {
+    if (nextProp.errors) {
+      this.setState({ errors: nextProp.errors });
+    }
   };
 
   render() {
@@ -115,3 +127,21 @@ export default class Register extends Component {
     );
   }
 }
+
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+const test123 = () => ({ test: 123 });
+
+export default connect(
+  mapStateToProps,
+  { registerUser, test123 }
+)(withRouter(Register));
