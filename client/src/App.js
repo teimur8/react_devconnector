@@ -5,7 +5,7 @@ import "./App.css";
 // Auth user
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
-import { setCurrentUser } from "./actions/authActions";
+import { setCurrentUser, logoutUser } from "./actions/authActions";
 
 import { Provider } from "react-redux";
 import store from "./store";
@@ -24,6 +24,13 @@ if (localStorage.jwtToken) {
   const decode = jwt_decode(localStorage.jwtToken);
   // set user
   store.dispatch(setCurrentUser(decode));
+
+  // Check exp time
+  const currentTime = Date.now() / 1000;
+  if (decode.exp < currentTime) {
+    store.dispatch(logoutUser());
+    window.location.href = "/login";
+  }
 }
 
 class App extends Component {
